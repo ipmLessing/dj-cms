@@ -25,12 +25,24 @@ SECRET_KEY = 'g3%zh@%!k$32bi%ejh2_i00a0tfs^mgmf0!zw-rm#%hm%rc^cg'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Django CMS
+    'djangocms_admin_style',
+    'django.contrib.sites',
+    'cms',
+    'menus',
+    'treebeard',
+
+    # Language package
+    'sekizai',
+
+    ########################################
+    # Django Default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+# Site id setup
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,9 +62,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ################# CMS ##################
+    'django.middleware.locale.LocaleMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
+    ########################################
 ]
 
 ROOT_URLCONF = 'dj_cms.urls'
+
+CMS_TEMPLATES = [
+    ('home.html', 'Home page template'),
+]
 
 TEMPLATES = [
     {
@@ -58,6 +84,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                # CMS
+                'cms.context_processors.cms_settings',
+                'django.template.context_processors.i18n',
+                # CMS Sekizai context processor
+                'sekizai.context_processors.sekizai',
+                #################################
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -103,7 +135,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# CMS must to set
+LANGUAGE_CODE = 'en'
+LANGUAGES = [('en', 'English')]
 
 TIME_ZONE = 'UTC'
 
@@ -118,3 +152,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# CMS
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
